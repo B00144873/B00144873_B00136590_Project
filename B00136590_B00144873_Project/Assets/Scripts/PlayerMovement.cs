@@ -2,20 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
-{
+public class PlayerMovement : MonoBehaviour {
     private Rigidbody playerRigidbody;
 
     public float horizontalInput;
     public float verticalInput;
-    public float horizontalSpeed = 20;
+    public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
 
-    public float jumpForce = 10;
-    public float jumpGravity = 2;
+    public float jumpForce = 25;
+    public float jumpGravity = 5;
     public bool grounded = true;
 
+    public float xRange = 5;
+
     private Animator playerAnimator;
+
+    public GameObject movePlatform;
 
     void Start() {
         playerRigidbody = GetComponent<Rigidbody>();
@@ -27,12 +30,13 @@ public class PlayerMovement : MonoBehaviour
     void Update() {
         Move();
         Jump();
+        playerBounds();
     }
 
     private void Move() {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.right * Time.deltaTime * horizontalSpeed * horizontalInput);
+        horizontalInput = Input.GetAxis("Vertical");
+        verticalInput = Input.GetAxis("Horizontal");
+        transform.Translate(Vector3.left * Time.deltaTime * horizontalSpeed * horizontalInput);
         transform.Translate(Vector3.forward * Time.deltaTime * verticalSpeed * verticalInput);
 
         if(verticalInput > 0) playerAnimator.SetBool("MoveForwards", true);
@@ -51,18 +55,30 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Jump() {
-        if(Input.GetKeyDown(KeyCode.Space) && grounded) playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        if(Input.GetKeyDown(KeyCode.Space) && grounded) {
+            playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            grounded = false;
+
+            playerAnimator.SetBool("JumpOrFall", true);
+        }
+    }
+
+    private void playerBounds() {
+        if(transform.position.x < -xRange) {
+            transform.position = new Vector3(-xRange, transform.position.y, transform.position.z);
+        }
+        if(transform.position.x > xRange) {
+            transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
+        }
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if(collision.gameObject.CompareTag("Ground")) {
-            grounded = true;
+        grounded = true;
 
-            playerAnimator.SetBool("JumpOrFall", false);
-        }
-    }
-    private void OnCollisionExit(Collision collision) {
-        if(collision.gameObject.CompareTag("Ground")) {
+        playerAnimator.SetBool("JumpOrFall", false);
+
+        if(collision.gameObject.CompareTag("BouncePlatform")) {
+            playerRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             grounded = false;
 
             playerAnimator.SetBool("JumpOrFall", true);
