@@ -21,19 +21,19 @@ public class MeleeEnemy : MonoBehaviour {
 
     void Update() {
         Move();
-        enemyBounds();
+        EnemyBounds();
     }
 
     void Move() {
         transform.Translate(Vector3.forward * Time.deltaTime * speed);
     }
 
-    private void enemyBounds() {
+    private void EnemyBounds() {
         if(transform.position.z >= zPosition + zRange / 2) {
             transform.Rotate(Vector3.up, 180);
         }
         else if(transform.position.z <= zPosition - zRange / 2) {
-                transform.Rotate(Vector3.up, 180);
+            transform.Rotate(Vector3.up, 180);
         }
     }
 }
