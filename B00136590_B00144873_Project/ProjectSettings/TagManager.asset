@@ -7,6 +7,10 @@ TagManager:
   - BouncePlatform
   - Enemy
   - Goal
+  - MovePlatform
+  - Ground
+  - Banana
+  - Satsuma
   layers:
   - Default
   - TransparentFX

@@ -23,10 +23,12 @@ public class MoveUpDownPlatform : MonoBehaviour
     }
 
     private void PlatformBounds() {
-        if(transform.position.y >= yPosition + yRange / 2) {
+        if(Mathf.Round(transform.position.y) >= yPosition + yRange / 2)
+        {
             transform.Rotate(Vector3.left, 180);
         }
-        else if(transform.position.y <= yPosition - yRange / 2) {
+        else if(Mathf.Round(transform.position.y) <= yPosition - yRange / 2)
+        {
             transform.Rotate(Vector3.left, 180);
         }
     }

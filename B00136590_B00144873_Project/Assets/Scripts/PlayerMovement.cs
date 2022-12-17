@@ -22,9 +22,12 @@ public class PlayerMovement : MonoBehaviour {
 
     public TextMeshProUGUI timeLeftText;
     public TextMeshProUGUI winText;
+    public Button menuButton;
     public TextMeshProUGUI loseText;
+    public TextMeshProUGUI bananaText;
+    public TextMeshProUGUI satsumaText;
 
-    public float timeLeft = 30;
+    public float timeLeft;
 
     void Start() {
         playerRigidbody = GetComponent<Rigidbody>();
@@ -93,18 +96,28 @@ public class PlayerMovement : MonoBehaviour {
     public void Win() {
         Destroy(gameObject);
 
-        winText.gameObject.SetActive(true);
-        timeLeftText.gameObject.SetActive(false);
+        Physics.gravity /= jumpGravity;
 
-        winText.text = "Level Complete!\nYour time was " + (30 - Mathf.Round(timeLeft)) + "s!";
+        winText.gameObject.SetActive(true);
+        menuButton.gameObject.SetActive(true);
+        timeLeftText.gameObject.SetActive(false);
+        bananaText.gameObject.SetActive(false);
+        satsumaText.gameObject.SetActive(false);
+
+        winText.text = "Level completed with " + Mathf.Round(timeLeft) + "s to spare!";
     }
 
     public void Lose()
     {
         Destroy(gameObject);
 
+        Physics.gravity /= jumpGravity;
+
         loseText.gameObject.SetActive(true);
+        menuButton.gameObject.SetActive(true);
         timeLeftText.gameObject.SetActive(false);
+        bananaText.gameObject.SetActive(false);
+        satsumaText.gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -125,6 +138,22 @@ public class PlayerMovement : MonoBehaviour {
         }
         if(collision.gameObject.CompareTag("Enemy")) {
             Lose();
+        }
+
+        if(collision.gameObject.CompareTag("Banana"))
+        {
+            Destroy(collision.gameObject);
+            bananaText.gameObject.SetActive(true);
+            timeLeft += 10;
+            satsumaText.gameObject.SetActive(false);
+        }
+
+        if(collision.gameObject.CompareTag("Satsuma"))
+        {
+            Destroy(collision.gameObject);
+            satsumaText.gameObject.SetActive(true);
+            timeLeft += 15;
+            bananaText.gameObject.SetActive(false);
         }
     }
 }

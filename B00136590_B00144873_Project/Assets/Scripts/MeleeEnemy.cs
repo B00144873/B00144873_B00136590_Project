@@ -29,10 +29,12 @@ public class MeleeEnemy : MonoBehaviour {
     }
 
     private void EnemyBounds() {
-        if(transform.position.z >= zPosition + zRange / 2) {
+        if(Mathf.Round(transform.position.z) >= zPosition + zRange / 2)
+        {
             transform.Rotate(Vector3.up, 180);
         }
-        else if(transform.position.z <= zPosition - zRange / 2) {
+        else if(Mathf.Round(transform.position.z) <= zPosition - zRange / 2)
+        {
             transform.Rotate(Vector3.up, 180);
         }
     }
